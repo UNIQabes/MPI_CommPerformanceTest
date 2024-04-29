@@ -4,3 +4,5 @@ bin/p2p_time:p2p_time.c second.c
 bin/allgather_time:allgather_time.c second.c
 	mpicc allgather_time.c -o bin/allgather_time
 
+bin/p2pcircle_time:p2pcircle_time.c second.c
+	mpicc p2pcircle_time.c -o bin/p2pcircle_time
