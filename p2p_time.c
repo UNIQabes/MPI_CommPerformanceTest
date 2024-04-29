@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 	int rank;
 
 	MPI_Init(&argc, &argv);
+
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	if (rank == 0)
 	{
@@ -52,7 +53,7 @@ int main(int argc, char *argv[])
 		double otherCommTime;
 		MPI_Recv(&otherCommTime, 1, MPI_INT, 0, 2025, MPI_COMM_WORLD, &status);
 		double maxTime = otherCommTime > commTime ? otherCommTime : commTime;
-		printf("%lf\n", maxTime);
+		printf("%lf", maxTime);
 	}
 
 	MPI_Finalize();
