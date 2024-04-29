@@ -24,36 +24,26 @@ int main(int argc, char *argv[])
 
 	int localDataNum = (DataNum + size - 1) / size;
 
-	int *buf = malloc(sizeof(int) * DataNum);
+	int *buf = malloc(sizeof(int) * localDataNum * size);
+
+	int *localBuf = malloc(sizeof(int) * DataNum);
 
 	// 計測開始--------------------------------------
 	MPI_Barrier(MPI_COMM_WORLD);
 	double start = second();
 
 	MPI_Status status;
-	if (rank == 0)
-	{
-		MPI_Send(buf, DataNum, MPI_INT, 1, 2024, MPI_COMM_WORLD);
-	}
-	else if (rank == 1)
-	{
-		MPI_Recv(buf, DataNum, MPI_INT, 0, 2024, MPI_COMM_WORLD, &status);
-	}
+	MPI_Allgather(localBuf, localDataNum, MPI_INT, buf, localDataNum, MPI_INT, MPI_COMM_WORLD);
 
 	// 計測終了--------------------------------------
 	MPI_Barrier(MPI_COMM_WORLD);
 	double end = second();
 
 	double commTime = end - start;
+	double maxTime = 0;
+	MPI_Reduce(&commTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 	if (rank == 0)
 	{
-		MPI_Send(&commTime, 1, MPI_INT, 1, 2025, MPI_COMM_WORLD);
-	}
-	else if (rank == 1)
-	{
-		double otherCommTime;
-		MPI_Recv(&otherCommTime, 1, MPI_INT, 0, 2025, MPI_COMM_WORLD, &status);
-		double maxTime = otherCommTime > commTime ? otherCommTime : commTime;
 		printf("%lf", maxTime);
 	}
 
