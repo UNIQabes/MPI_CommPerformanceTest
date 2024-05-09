@@ -7,10 +7,17 @@ int main(int argc, char *argv[])
 {
 	MPI_Init(&argc, &argv);
 
+	
+
 	int rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	int size;
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
+	char *procName = malloc(sizeof(char) * 300);
+	int len=0;
+	MPI_Get_processor_name(procName, &len);
+	//printf("%s:%d/%d\n",procName,rank,size);
+
 
 	int DataNum = 0;
 	if (argc == 2)
@@ -46,14 +53,14 @@ int main(int argc, char *argv[])
 	double end = second();
 
 	double commTime = end - start;
-	if (rank == 0)
+	if (rank == 1)
 	{
-		MPI_Send(&commTime, 1, MPI_INT, 1, 2025, MPI_COMM_WORLD);
+		MPI_Send(&commTime, 1, MPI_INT, 0, 2025, MPI_COMM_WORLD);
 	}
-	else if (rank == 1)
+	else if (rank == 0)
 	{
 		double otherCommTime;
-		MPI_Recv(&otherCommTime, 1, MPI_INT, 0, 2025, MPI_COMM_WORLD, &status);
+		MPI_Recv(&otherCommTime, 1, MPI_INT, 1, 2025, MPI_COMM_WORLD, &status);
 		double maxTime = otherCommTime > commTime ? otherCommTime : commTime;
 		printf("%lf", maxTime);
 	}

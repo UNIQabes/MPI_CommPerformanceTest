@@ -6,3 +6,6 @@ bin/allgather_time:allgather_time.c second.c
 
 bin/p2pcircle_time:p2pcircle_time.c second.c
 	mpicc p2pcircle_time.c -o bin/p2pcircle_time
+
+bin/print_assign_hosts:print_assign_hosts.c
+	mpicc print_assign_hosts.c -o bin/print_assign_hosts
